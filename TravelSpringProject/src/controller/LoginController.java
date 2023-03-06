@@ -1,8 +1,11 @@
 package controller;
 
+import java.io.PrintWriter;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -26,13 +29,29 @@ public class LoginController {
 		return "loginForm"; // view/writeform.jsp 찾음.
 	}//ModelAndView를 리턴하는것과 같음
 	
+	//로그인 정보 가져옴
 	@RequestMapping("/loginAction.sp")
-	public String read(LoginDTO dto, HttpSession session){ //requset -> session으로 변경
+	public String read(LoginDTO dto, HttpSession session, HttpServletResponse resp){ //requset -> session으로 변경
 	
-		LoginDTO result = loginService.getLogin(dto); //글 읽기
-		System.out.println(result);
-		session.setAttribute("login", result);  //모델앤 뷰중에서 모델~
-		return "main"; //read.jsp 로그인 성공 후 main으로
+		dto = loginService.getLogin(dto);		//글 읽기
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		
+		if (dto != null) {		//가져옴
+
+			session.setAttribute("login", dto.getId());
+
+			return "redirect:./main.sp";
+
+		} else {		//로그인에 실패했을 경우, alert를 만들어 로그인 페이지로 돌아감
+
+			out.println("<script language='javascript'>");
+			out.println("alert('정보가 맞지않습니다. 다시 로그인 해주세요.');");
+			out.println("</script>");
+
+			return "redirect:.//loginForm.sp";
+		}
 	}
 	
 	//로그아웃
