@@ -32,8 +32,10 @@ public class LoginController {
 	//로그인 정보 가져옴
 	@RequestMapping("/loginAction.sp")
 	public String read(LoginDTO dto, HttpSession session, HttpServletResponse resp){ //requset -> session으로 변경
-	
-		dto = loginService.getLogin(dto);		//글 읽기
+
+		System.out.println("loginAction");
+		
+		dto = loginService.getLogin(dto);		//읽기
 		
 		resp.setContentType("text/html; charset=utf-8");
 		PrintWriter out = resp.getWriter();
@@ -42,7 +44,7 @@ public class LoginController {
 
 			session.setAttribute("login", dto.getId());
 
-			return "redirect:./main.sp";
+			return "main"; //로그인 성공 시 메인으로
 
 		} else {		//로그인에 실패했을 경우, alert를 만들어 로그인 페이지로 돌아감
 
@@ -72,12 +74,29 @@ public class LoginController {
 		}//ModelAndView를 리턴하는것과 같음
 		
 	@RequestMapping("/mainAction.sp")
-	public String mainAction(LoginDTO dto, HttpSession session){ //requset -> session으로 변경
+	public String mainAction(LoginDTO dto, HttpSession session, HttpServletResponse resp){ //requset -> session으로 변경
 	
-		LoginDTO result = loginService.getLogin(dto); //글 읽기
-		System.out.println(result);
-		session.setAttribute("login", result);  //모델앤 뷰중에서 모델~
-		return "afterLogin"; //main에서 아이디 선택 시 정보 변경, 탈퇴로
+		System.out.println("mainAction");
+		
+		dto = loginService.getLogin(dto);		//읽기
+		
+		resp.setContentType("text/html; charset=utf-8");
+		PrintWriter out = resp.getWriter();
+		
+		if (dto != null) {		//가져옴
+
+			session.setAttribute("login", dto.getId());
+
+			return "afterLogin"; //아이디 성공 시 afterLogin -> 회원 정보 변경/탈퇴 가능
+
+		} else {		//로그인 히지 않고 접근했을 경우, alert를 만들어 로그인 페이지로 돌아감
+
+			out.println("<script language='javascript'>");
+			out.println("alert('로그인 해주세요.');");
+			out.println("</script>");
+
+			return "redirect:.//loginForm.sp";
+		}
 	}
 	
 	//register

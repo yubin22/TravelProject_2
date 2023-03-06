@@ -14,7 +14,7 @@
 		{ //아이디
 			alert("아이디를 입력해주세요.");
 			document.register.id.focus();
-		}else if(document.register.idDuplication.value == "")
+		}else if(document.register.idDuplication.value =="") //!= "idCheck"
 		{ //아이디 중복 채크
 			alert("아이디 중복 체크를 해주세요.");
 			document.register.idDuplication.focus();
@@ -55,30 +55,8 @@
 			location.href="loginForm.sp"
 		}
 	}
-		
+
 		//아이디 중복 체크
-		/*$('.id_input').on("propertychange change keyup paste input", function()
-			{
-				var id = $('.id_input').val(); //입력한 아이디
-				var data = {id : id}; //컨트롤에 넘어갈 데이터 이름 : 입력된 데이터 값
-				
-				$.ajax(
-				{
-					type : "post",
-					url : "/controller/IdCheck.sp",
-					data : data;
-					success : function(result)
-					{
-						if(result != 'fail'){
-							$('.id_input_re_1');
-						}else{
-							$('.id_input_re_2');
-						}
-					}
-				}
-			});*/
-				
-		//아이디 중복 체크2
 		function dbCheckId()
 		{
 			if(document.register.id.value.length==0 || id=="")
@@ -90,28 +68,13 @@
 				window.open("dbCheckId.sp?id="+document.register.id.value);
 			}
 		}
-		
+			
+		//다른 아이디로 변경했을때 다시 중복 확인
 		function inputIdChk() {
 			document.register.idDuplication.value="idUnckeck";
 			document.register.dbCheckId.disabled = false;
 			document.register.dbCheckId.style.cursor="pointer";
 			}
-		
-		/*
-		// 아이디 중복확인 클릭 시 중복체크 화면open
-        function openIdCheck()
-		{
-            window.name = "parentForm";
-            window.open("idCheckForm.jsp",
-                    "chkForm", "width=500, height=300, resizable = no, scrollbars = no");    
-        }
- 
-        // 아이디 입력창에 값 입력시 hidden에 idUncheck를 세팅한다.
-        // 중복체크 후 다시 아이디 창이 새로운 아이디를 입력했을 때 다시 중복체크를 하도록 한다.
-        function inputIdCheck(){
-            document.register.idDuplication.value ="idUncheck";
-        }
-		*/
 		
 </script>
 </head>
@@ -127,9 +90,6 @@
 	                    <td>
 	                    	<!-- 중복 체크 후 새로운 아이디 입력 시 중복 체크 안 된것으로 간주 -->
 	                        <input type="text" name="id" maxlength="20" class="id_input" onkeydown="inputIdChk()">
-	                        <!-- 중복 체크 확인 창 -->
-	                        <!-- <span class="id_input_re_1">사용 가능한 아이디입니다.</span>    -->
-	                         <!--<span class="id_input_re_2">아이디가 이미 존재합니다.</span> -->
 	                         <!-- 중복 체크 버튼 -->
 	                         <button type="button" onclick="dbCheckId()" name="dbCheckId" class="checkId">중복 확인</button>
 	                         <!-- 중복 체크 여부 -->
