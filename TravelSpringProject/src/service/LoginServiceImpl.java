@@ -36,8 +36,8 @@ public class LoginServiceImpl implements LoginService {
 
 	//아이디 중복 체크
 	@Override
-	public int idCheck(String id) {
-		int result = loginDAO.selectAllId(id);
+	public LoginDTO idCheck(LoginDTO dto) {
+		LoginDTO result = loginDAO.selectId(dto);
 		return result;
 	}
 

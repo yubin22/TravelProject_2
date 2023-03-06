@@ -54,4 +54,9 @@
  	select * from member where id = #id#
  </select> 
  
+ <!-- 회원목록 -->
+ <select id="getAllMember" parameterClass="login" resultMap="loginResult">
+ 	select * from member
+ </select> 
+ 
 </sqlMap>

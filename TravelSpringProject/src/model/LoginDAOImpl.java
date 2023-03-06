@@ -2,6 +2,7 @@ package model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 
@@ -36,21 +37,25 @@ public class LoginDAOImpl implements LoginDAO {
 
 	//아이디 중복 체크
 	@Override
-	public int selectAllId(String id) {
-		ResultSet result = (ResultSet) sqlMapClientTemplate.queryForObject("idCheck", id);
+	public LoginDTO selectId(LoginDTO id) {
+		LoginDTO result = (LoginDTO) sqlMapClientTemplate.queryForObject("idCheck", id);
 		int res = -1;		//오류 시
-		try {
-			if(result.next()) {
-				res = 1; //존재한다면
-				System.out.println("result 값 : "+result);
-			}else {
-				res=0; //존재 안 하면
-				System.out.println("result 값 : "+result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(!(result == null)&& result.getId() == null) {
+			res = 1; //존재한다면
+			System.out.println("result 값 : "+result);
+		}else {
+			res=0; //존재 안 하면
+			System.out.println("result 값 : "+result);
 		}
-		return 0;
+		return result;
+	}
+
+	//회원목록
+	@Override
+	public ArrayList<LoginDTO> selectAllId() {
+		ArrayList<LoginDTO>  result = (ArrayList<LoginDTO>) sqlMapClientTemplate.queryForList("getAllMember");
+		int res = -1;		//오류 시
+		return result;
 	}
 
 }

@@ -14,7 +14,7 @@
 		{ //아이디
 			alert("아이디를 입력해주세요.");
 			document.register.id.focus();
-		}else if(document.register.idDuplication.value =="") //!= "idCheck"
+		}else if(document.register.idDuplication.value != "idCheck") //!= "idCheck"
 		{ //아이디 중복 채크
 			alert("아이디 중복 체크를 해주세요.");
 			document.register.idDuplication.focus();
@@ -49,17 +49,18 @@
 		}else{
 			document.register.submit();
 		}
-		
+	}
+	
 		//취소 시 로그인 페이지로
 		function goLoginForm(){
 			location.href="loginForm.sp"
 		}
-	}
+	
 
 		//아이디 중복 체크
 		function dbCheckId()
-		{
-			if(document.register.id.value.length==0 || id=="")
+		{	
+			if(document.register.id.value.length==0 ||document.register.id=="")
 			{
 				alert("아이디를 입력해주세요.");
 				document.register.id.focus();
@@ -72,8 +73,8 @@
 		//다른 아이디로 변경했을때 다시 중복 확인
 		function inputIdChk() {
 			document.register.idDuplication.value="idUnckeck";
-			document.register.dbCheckId.disabled = false;
-			document.register.dbCheckId.style.cursor="pointer";
+			//document.register.checkId.disabled = false;
+			document.register.checkId.style.cursor="pointer";
 			}
 		
 </script>
@@ -91,7 +92,9 @@
 	                    	<!-- 중복 체크 후 새로운 아이디 입력 시 중복 체크 안 된것으로 간주 -->
 	                        <input type="text" name="id" maxlength="20" class="id_input" onkeydown="inputIdChk()">
 	                         <!-- 중복 체크 버튼 -->
-	                         <button type="button" onclick="dbCheckId()" name="dbCheckId" class="checkId">중복 확인</button>
+	                         <button type="button" onclick="dbCheckId()" name="checkId" class="checkId">
+	                         중복 확인
+	                         </button>
 	                         <!-- 중복 체크 여부 -->
 	                         <input type="hidden" name="idDuplication" value="idUncheck">
 	                    </td>

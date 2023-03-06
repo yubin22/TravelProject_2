@@ -12,5 +12,5 @@ public interface LoginService {
 	public int deleteLogin(LoginDTO dto);
 
 	//아이디 중복 검사
-	public int idCheck(String id);
+	public LoginDTO idCheck(LoginDTO dto);
 }

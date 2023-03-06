@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.annotation.Resource;
@@ -38,32 +39,39 @@ public class LoginController {
 		dto = loginService.getLogin(dto);		//읽기
 		
 		resp.setContentType("text/html; charset=utf-8");
-		PrintWriter out = resp.getWriter();
-		
-		if (dto != null) {		//가져옴
+		PrintWriter out;
+		try {
+			out = resp.getWriter();
+			if (dto != null) {		//가져옴
 
-			session.setAttribute("login", dto.getId());
+				session.setAttribute("login", dto.getId());
 
-			return "main"; //로그인 성공 시 메인으로
+				return "main"; //로그인 성공 시 메인으로
 
-		} else {		//로그인에 실패했을 경우, alert를 만들어 로그인 페이지로 돌아감
+			} else {		//로그인에 실패했을 경우, alert를 만들어 로그인 페이지로 돌아감
 
-			out.println("<script language='javascript'>");
-			out.println("alert('정보가 맞지않습니다. 다시 로그인 해주세요.');");
-			out.println("</script>");
+				out.println("<script language='javascript'>");
+				out.println("alert('정보가 맞지않습니다. 다시 로그인 해주세요.');");
+				out.println("</script>");
 
-			return "redirect:.//loginForm.sp";
+				return "redirect:./loginForm.sp";
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return "redirect:./loginForm.sp"; // 로그인시 오류 발생하면 로그인폼으로 감.
+		
 	}
 	
 	//로그아웃
 	@RequestMapping("/logoutAction.sp")
 	public String logoutAction(LoginDTO dto, HttpSession session){ //requset -> session으로 변경
-	
-		LoginDTO result = loginService.getLogin(dto); //글 읽기
-		System.out.println(result);
-		session.setAttribute("login", result);  //모델앤 뷰중에서 모델~
-		return "logoutAction"; 
+		
+		System.out.println("logout");
+		
+		session.invalidate(); //세션 정보 삭제
+		return "redirect:./loginForm.sp"; 
 	}
 	
 	//main페이지
@@ -81,22 +89,29 @@ public class LoginController {
 		dto = loginService.getLogin(dto);		//읽기
 		
 		resp.setContentType("text/html; charset=utf-8");
-		PrintWriter out = resp.getWriter();
-		
-		if (dto != null) {		//가져옴
+		PrintWriter out;
+		try {
+			out = resp.getWriter();
+			
+			if (dto != null) {		//가져옴
 
-			session.setAttribute("login", dto.getId());
+				session.getAttribute("login");
 
-			return "afterLogin"; //아이디 성공 시 afterLogin -> 회원 정보 변경/탈퇴 가능
+				return "afterLogin"; //아이디 성공 시 afterLogin -> 회원 정보 변경/탈퇴 가능
 
-		} else {		//로그인 히지 않고 접근했을 경우, alert를 만들어 로그인 페이지로 돌아감
+			} else {		//로그인 히지 않고 접근했을 경우, alert를 만들어 로그인 페이지로 돌아감
 
-			out.println("<script language='javascript'>");
-			out.println("alert('로그인 해주세요.');");
-			out.println("</script>");
+				out.println("<script language='javascript'>");
+				out.println("alert('로그인 해주세요.');");
+				out.println("</script>");
 
-			return "redirect:.//loginForm.sp";
+				return "redirect:.//loginForm.sp";
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return "redirect:.//loginForm.sp"; // 메인에서 오류 발생하면 로그인폼으로 감.
 	}
 	
 	//register
@@ -116,10 +131,10 @@ public class LoginController {
 	//아이디 중복 체크
 	@RequestMapping("/dbCheckId.sp")
 	public String dbCheckId(LoginDTO dto, HttpSession session) {
-		String id = (String) session.getAttribute("id");
-		System.out.println("요청한 아이디 : "+ id);
-		int result = loginService.idCheck(id);
+		System.out.println("요청한 아이디 : "+ dto.getId());
+		LoginDTO result = loginService.idCheck(dto);
 		session.setAttribute("result", result);
+		session.setAttribute("param", result);
 		return "dbCheckId";
 	}
 	
