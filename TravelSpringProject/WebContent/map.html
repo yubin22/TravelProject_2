@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Google Maps JavaScript API Example</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDeWfVAgYIBv-552O2moEspg1v8AyicAtI&callback=initMap"
+      async defer></script>
+    <script>
+      let map;
+      let markers = [];
+      const fixedLocations = [
+        { lat: 35.392945, lng: 139.444294 },
+        { lat: 35.710139, lng: 139.810833 },
+        { lat: 35.632778, lng: 139.880556 },
+        { lat: 34.687378, lng: 135.525844 },
+      { lat: 34.668611, lng:135.5013893 },  
+        { lat: 42.99, lng: 141.353444 },
+      { lat: 42.99, lng: 141.353444 }
+      ];
+      
+      //마커 "ABCDF" 추가   배열 값이라서 코드 11~16 좌표 지정 하면 그 위치에 고정 됨  
+      const fixedLabels = "ABCDEF";
+      let fixedMarkers = [];
+      let labelIndex = 0;
+
+        
+      function initMap() {
+        // Set the map options
+        const options = {
+          zoom: 5,
+          center: { lat: 35.392945, lng: 139.444294  }
+        };
+
+        // 맵 생성 
+        map = new google.maps.Map(document.getElementById("map"), options);
+
+        // 고정 마커 생성
+        for (let i = 0; i < fixedLocations.length; i++) {
+          addFixedMarker(fixedLocations[i], fixedLabels[i]);
+        }
+
+       
+        map.addListener("click", (event) => {
+          addMarker(event.latLng);
+        });
+      }
+
+      
+      function addFixedMarker(location, label) {
+        // 클릭 시  다중 마커 생성
+          
+        const marker = new google.maps.Marker({
+          position: location,
+          label: label,
+          map: map
+        });
+
+        // Add the marker to the fixedMarkers array
+        fixedMarkers.push(marker);
+      }
+
+      function addMarker(location) {
+        // Create a new marker
+        const marker = new google.maps.Marker({
+          position: location,
+          map: map
+        });
+
+        // Add a click event listener to the marker to open the infowindow
+        marker.addListener("click", () => {
+            let infowindow = new google.maps.InfoWindow();
+          infowindow.setContent(`
+            <div>
+              <h4>마커 추가</h4>
+              <p>위도: ${location.lat()}</p>
+              <p>경도: ${location.lng()}</p>
+            </div>
+          `);
+          infowindow.open(map, marker);
+        });
+
+        // Add the marker to the markers array
+        markers.push(marker);
+      }
+
+      function clearMarkers() {
+        // 다중마커 삭제 코드
+        for (let i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        // 다중마커 전체 지움
+        markers = [];
+      }
+
+      function deleteMarkers() {
+        // Remove all markers from the map
+        clearMarkers();
+        // Remove all markers from the markers array
+        markers = [];
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="height: 400px; width: 100%;"></div>
+    <button onclick="deleteMarkers()">모든 마커 삭제</button>
+  </body>
+</html>

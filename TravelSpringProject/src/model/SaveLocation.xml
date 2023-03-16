@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC 
+	"-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+ 
+ <cacheModel type="LRU" id="guestCashe">
+ 	<flushInterval hours="24"/>
+ 	<flushOnExecute statement="insertGuest"/>
+ 	<property name="size" value="10"/>
+ </cacheModel>
+ 
+ 
+ <!-- typeAlias : 해당 클래스에 별명 지정  -->
+ <typeAlias alias="login" type="model.LoginDTO" />
+ <typeAlias alias="save" type="model.SaveLocationDTO" />
+ 
+ <resultMap class="save" id="saveResult"> <!-- queryForMap,List 사용위해 -->
+ 
+	<result property="id" column="id" />  	 	
+	<result property="locationNum" column="location_num" />    	 	
+	<result property="locationName" column="location_name" />    	 
+	
+ </resultMap> 
+ 
+<!-- 전체 여행지 목록 -->
+ <select id="getList" resultClass="save">
+ 	select location_num as locationnum, location_name as locationname, picture, prefecture, region
+	from location 
+ </select>  
+ 
+ <!-- locationName의 상세정보 확인 -->
+ <select id="getName" parameterClass="save" resultClass="save">
+ 	select location_num as locationnum, location_name as locationname,  picture, prefecture, region, type, season
+ 	from location 
+ 	where location_num = #locationNum#
+ </select>
+ 
+ <!-- id별 여행지 목록 -->
+ <select id="getMyList" parameterClass="save" resultClass="save">
+ 	select s.id, s.location_num as locationnum, l.picture, l.prefecture, l.location_name as locationname
+	from saved_location s
+	join location l
+	on (s.location_num = l.location_num)
+	where id = #id#
+ </select>  
+ 
+<!-- myList에 insert-->
+<insert id="addSave" parameterClass="save" >
+	insert into saved_location (id, location_num)
+	values(#id#, #locationNum#)
+</insert>
+ 
+ <!-- 이미 저장된 것이 있는지 체크 (목록, 회원 확인) -->
+ <select id="checkSave" parameterClass="save" resultClass="save">
+ 	select location_num from saved_location where id = #id# and location_num = #locationNum#
+ </select> 
+ 
+ <!-- myList 삭제 -->
+ <delete id="deleteSave" parameterClass="save">
+ 	delete from saved_location where id = #id# and location_num= #locationNum#
+ </delete>
+ 
+</sqlMap>

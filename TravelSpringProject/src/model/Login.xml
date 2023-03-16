@@ -23,7 +23,8 @@
 	<result property="gender" column="gender" />     	 	
 	<result property="mail" column="mail" />     	 	
 	<result property="phone" column="phone" />     	 	
-	<result property="address" column="address" /> 
+	<result property="address" column="address" />      	 	
+	<result property="locationNum" column="location_num" /> 
 	
  </resultMap>
  
@@ -44,9 +45,14 @@
  	where id=#id#
  </update>
  
+<!-- myList 삭제 -->
+<delete id="deleteMyList" parameterClass="login">
+	delete from saved_location where location_num= #locationNum#
+</delete>
+ 
  <!-- 삭제 -->
  <delete id="deleteLogin" parameterClass="login">
- delete from member where id = #id# and pwd = #pwd#
+	 delete from member where id = #id# and pwd = #pwd#
  </delete>
  
  <!-- 아이디 중복 검사 -->
